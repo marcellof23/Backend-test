@@ -8,7 +8,7 @@
 <li>And all other dependecies can be installed via package.json</li>
 </ul>
 
-### How to start ### How To Start
+### How to start
 <ul>
 <li>Clone this reporsitory
 <li>then npm install</li>
