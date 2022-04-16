@@ -13,10 +13,13 @@ const JobList = db.JobList;
 const API_PREFIX = process.env.API_PREFIX;
 
 router.get('/api/jobs/recruitment-positions', verifyToken, (req, res) => {
-    logger.info('Fetch recruitment position by search term and pagination');
     const API_PREF = API_PREFIX + '/recruitment/positions.json';
+    const pageSize = 5;
+
+    logger.info('Fetch recruitment position by search term and pagination');
     axios.get(API_PREF).then((response) => {
         response = response.data;
+
         if (req.query.description) {
             response = response.filter((el) =>
                 el.description.toLowerCase().includes(req.query.description.toLowerCase())
@@ -38,6 +41,15 @@ router.get('/api/jobs/recruitment-positions', verifyToken, (req, res) => {
                     return el.type == 'Part Time';
                 });
             }
+        }
+
+        if (req.query.page) {
+            var queryPage;
+            queryPage = parseInt(req.query.page);
+            if (isNaN(queryPage)) return res.status(400).json({ msg: 'Page must be an integer!' });
+
+            const offset = (queryPage - 1) * pageSize;
+            response = response.slice(offset, Math.min(offset + pageSize, response.length));
         }
         return res.json(response);
     });
